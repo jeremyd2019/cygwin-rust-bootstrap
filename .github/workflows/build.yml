@@ -319,8 +319,8 @@ jobs:
             llvm=20.1.5-1
             libclang20.1=20.1.5-1
             clang=20.1.5-1
-            
-          
+            libpolly-devel=20.1.5-1
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
