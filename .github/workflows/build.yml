@@ -40,14 +40,20 @@ jobs:
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mkdir -p pkgs/x86_64/release
           git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
-          git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
-          cd libgit2
+          git clone -b playground https://cygwin.com/git/cygwin-packages/curl
+          #git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
+          cd curl
+          sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
+          awk -i inplace -F= -v OFS== '$1=="RELEASE" {$2++} 1' curl.cygport
+          cygport curl.cygport download all-test
+          cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
+          cd ../libgit2
           cygport libgit2.cygport download all-test
           cp -R libgit2-*.x86_64/dist/* ../pkgs/x86_64/release
-          cd ../llvm
-          pip3 install --user myst_parser
-          BOOTSTRAP=ON cygport llvm.cygport download all-test
-          cp -R libllvm-*.x86_64/dist/* ../pkgs/x86_64/release
+          #cd ../llvm
+          #pip3 install --user myst_parser
+          #BOOTSTRAP=ON cygport llvm.cygport download all-test
+          #cp -R libllvm-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
