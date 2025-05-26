@@ -34,14 +34,14 @@ jobs:
             libssl3=3.0.16-2
             openssl=3.0.16-2
 
-      - name: asdf
+      - name: build
         run: |
           git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
           git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
           cd libgit2
-          cygport libgit2.cygport all-test
+          cygport libgit2.cygport download all-test
           cd ../llvm
-          BOOTSTRAP=ON cygport llvm.cygport all-test
+          BOOTSTRAP=ON cygport llvm.cygport download all-test
         shell: d:\cygwin\bin\bash.exe -eo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
