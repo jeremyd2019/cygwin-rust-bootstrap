@@ -64,7 +64,7 @@ jobs:
         with:
           name: packages
           path: |
-            pkgs/
+            d:/cygwin/home/runneradmin/pkgs/
 
   build2:
     runs-on: windows-latest
@@ -113,6 +113,7 @@ jobs:
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
           git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
           cd llvm
@@ -130,5 +131,5 @@ jobs:
           name: packages
           overwrite: true
           path: |
-            pkgs/
+            d:/cygwin/home/runneradmin/pkgs/
 
