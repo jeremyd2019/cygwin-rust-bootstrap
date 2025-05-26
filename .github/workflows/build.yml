@@ -36,12 +36,13 @@ jobs:
 
       - name: build
         run: |
+          export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
           git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
           cd libgit2
           cygport libgit2.cygport download all-test
           cd ../llvm
-          pip install --user myst_parser
+          pip3 install --user myst_parser
           BOOTSTRAP=ON cygport llvm.cygport download all-test
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
