@@ -80,7 +80,7 @@ jobs:
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
-            file://${{ github.workspace }}/pkgs
+            ${{ github.workspace }}\pkgs
           check-sig: false
           packages: |
             cygutils-extra
