@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build1:
     runs-on: windows-latest
 
     steps:
@@ -55,7 +55,7 @@ jobs:
           #BOOTSTRAP=ON cygport llvm.cygport download all-test
           #cp -R libllvm-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
-          mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-curr
+          mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
@@ -65,3 +65,70 @@ jobs:
           name: packages
           path: |
             pkgs/
+
+  build2:
+    runs-on: windows-latest
+    needs: build1
+    steps:
+      - run: git config --global core.autocrlf input
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: pkgs
+          
+      - uses: cygwin/cygwin-install-action@master
+        with:
+          site: >-
+            http://mirrors.kernel.org/sourceware/cygwin/
+            file://${{ github.workspace }}/pkgs
+          check-sig: false
+          packages: |
+            cygutils-extra
+            cmake
+            calm
+            cygport
+            flexdll
+            gdb
+            git
+            make
+            ninja
+            ocaml
+            python3
+            libxml2-devel
+            zlib-devel
+            libzstd-devel
+            vim
+            python39-sphinx
+            python39-pytz
+            libpcre2-devel
+            libssh2-devel
+            libcurl4=8.13.0-2
+            libcurl-devel=8.13.0-2
+            libssl-devel=3.0.16-2
+            libssl3=3.0.16-2
+            openssl=3.0.16-2
+            libgit2_1_9=1.9.0-1
+            libgit2-devel=1.9.0-1
+          
+      - name: build
+        run: |
+          export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          mkdir -p pkgs/x86_64/release
+          git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
+          cd llvm
+          pip3 install --user myst_parser
+          BOOTSTRAP=ON cygport llvm.cygport download all-test
+          cp -R libllvm-*.x86_64/dist/* ../pkgs/x86_64/release
+          cd ../pkgs
+          mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
+          bzip2 <x86_64/setup.ini >x86_64/setup.bz2
+          xz -6e <x86_64/setup.ini >x86_64/setup.xz
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          overwrite: true
+          path: |
+            pkgs/
+
