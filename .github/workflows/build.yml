@@ -41,8 +41,9 @@ jobs:
           cd libgit2
           cygport libgit2.cygport download all-test
           cd ../llvm
+          pip install --user myst_parser
           BOOTSTRAP=ON cygport llvm.cygport download all-test
-        shell: d:\cygwin\bin\bash.exe -eo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
