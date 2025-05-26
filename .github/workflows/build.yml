@@ -8,9 +8,6 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
-      
-      - uses: actions/checkout@v4
-
       - uses: cygwin/cygwin-install-action@master
         with:
           packages: |
@@ -37,16 +34,16 @@ jobs:
             libssl3=3.0.16-2
             openssl=3.0.16-2
 
-        - run: |
+      - run: |
             git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
             git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
             cd libgit2
             cygport libgit2.cygport all-test
             cd ../llvm
             BOOTSTRAP=ON cygport llvm.cygport all-test
-          shell: d:\cygwin\bin\bash -eo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash -eo pipefail -o igncr '{0}'
 
-        - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
           with:
             name: packages
             path: |
