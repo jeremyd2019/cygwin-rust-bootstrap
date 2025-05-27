@@ -155,6 +155,7 @@ jobs:
           cd rustc-nightly-src
           patch -p1 -i ../141556.patch
           pushd src/tools/cargo && patch -p1 -i ../../../../15600.patch && popd
+          mv .cargo .cargo.bak
           MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst < ../bootstrap.toml > bootstrap.toml
           export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
