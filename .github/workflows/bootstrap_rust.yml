@@ -92,10 +92,11 @@ jobs:
         with:
           release: true
           update: true
-          msystem: CLANG64
+          msystem: MINGW64
           install: >-
-            mingw-w64-clang-x86_64-toolchain
-            mingw-w64-clang-x86_64-llvm
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-llvm
+            mingw-w64-x86_64-clang
       - uses: cygwin/cygwin-install-action@master
         with:
           site: >-
@@ -151,7 +152,7 @@ jobs:
           tar -Jxf rustc-nightly-src.tar.xz
           cd rustc-nightly-src
           MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -m "$GITHUB_WORKSPACE")" envsubst < ../bootstrap.toml > bootstrap.toml
-          export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/clang64/bin:$PATH"
+          export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
           PKG_CONFIG="$(cygpath -w /usr/bin/pkgconf.exe)" \
           LIBGIT2_NO_VENDOR=1 \
