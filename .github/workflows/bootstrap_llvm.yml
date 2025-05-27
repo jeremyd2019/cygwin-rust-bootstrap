@@ -8,7 +8,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: git config --global core.autocrlf input
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -49,14 +50,14 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           overwrite: true
           path: |
-            d:/cygwin/home/runneradmin/pkgs/
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
   clang_bootstrap:
     runs-on: windows-latest
@@ -68,7 +69,8 @@ jobs:
           name: packages
           path: pkgs
           
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -115,14 +117,14 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           overwrite: true
           path: |
-            d:/cygwin/home/runneradmin/pkgs/
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
   llvm:
     runs-on: windows-latest
@@ -134,7 +136,8 @@ jobs:
           name: packages
           path: pkgs
           
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -184,14 +187,14 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           overwrite: true
           path: |
-            d:/cygwin/home/runneradmin/pkgs/
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
   clang:
     runs-on: windows-latest
@@ -203,7 +206,8 @@ jobs:
           name: packages
           path: pkgs
           
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -253,13 +257,13 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           overwrite: true
           path: |
-            d:/cygwin/home/runneradmin/pkgs/
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
 
