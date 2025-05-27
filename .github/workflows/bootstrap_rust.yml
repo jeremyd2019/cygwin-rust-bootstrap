@@ -121,7 +121,8 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel
+            libcurl-devel=8.13.0-2
+            libcurl4=8.13.0-2
             libpcre2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
@@ -130,6 +131,8 @@ jobs:
             libllvm20.1=20.1.5-1
             libllvm-devel=20.1.5-1
             llvm=20.1.5-1
+            libgit2_1_9=1.9.0-1
+            libgit2-devel=1.9.0-1
 
       - name: build
         run: |
