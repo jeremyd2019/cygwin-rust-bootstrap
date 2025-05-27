@@ -1,0 +1,68 @@
+# see src/bootstrap/defaults/
+profile = "dist"
+
+# see src/bootstrap/src/utils/change_tracker.rs
+change-id = 138986
+
+[build]
+cargo = "/usr/bin/cargo"
+rustc = "/usr/bin/rustc"
+rustfmt = "/usr/bin/rustfmt"
+cargo-clippy = "/usr/bin/cargo-clippy"
+submodules = false
+build = "x86_64-pc-cygwin"
+host = ["x86_64-pc-cygwin"]
+target = [
+  "x86_64-pc-cygwin",
+]
+build-dir = "build-Cygwin"
+python = "/usr/bin/python"
+locked-deps = true
+#vendor = true
+tools = [
+"clippy", "rustdoc", "rustfmt", "rust-analyzer-proc-macro-srv", "analysis", "src",
+  "cargo",
+]
+profiler = true
+
+# Generating docs fails with the wasm32-* targets
+docs = false
+
+[install]
+prefix = "/usr"
+sysconfdir = "/etc"
+
+[llvm]
+link-shared = true
+
+[rust]
+#debug = true
+codegen-units-std = 1
+#debuginfo-level-std = 2
+channel = "stable"
+rpath = false
+frame-pointers = true
+llvm-bitcode-linker = false
+lld = false
+llvm-tools = false
+codegen-tests = false
+deny-warnings = false
+backtrace-on-ice = true
+# FIXME: Control Flow Guard works only on gnullvm targets, in other cases it's ignored
+# https://github.com/rust-lang/rust/pull/132965
+control-flow-guard = true
+lto = "thin"
+
+[dist]
+compression-formats = ["gz"]
+compression-profile = "fast"
+include-mingw-linker = false
+
+[target.x86_64-pc-cygwin]
+cc = "/usr/bin/gcc"
+cxx = "/usr/bin/g++"
+ar = "/usr/bin/ar"
+ranlib = "/usr/bin/ranlib"
+linker = "/usr/bin/x86_64-pc-cygwin-gcc"
+llvm-config = "/usr/bin/llvm-config"
+profiler = false
