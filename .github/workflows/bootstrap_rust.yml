@@ -165,4 +165,10 @@ jobs:
           OPENSSL_STATIC=0 \
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py install --stage 2
+          cd build-Cygwin/dest-rust && tar -Jcf ~/rust-prefix.tar.xz * 
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-prefix
+          path: |
+            d:/cygwin/home/runneradmin/rust-prefix.tar.xz
