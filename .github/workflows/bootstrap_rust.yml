@@ -75,3 +75,86 @@ jobs:
           name: packages
           path: |
             d:/cygwin/home/runneradmin/pkgs/
+
+  cross_rust:
+    runs-on: windows-latest
+    needs: curl_libgit2
+
+    steps:
+      - run: git config --global core.autocrlf input
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: pkgs
+      - id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          release: true
+          update: true
+          msystem: CLANG64
+          install: >-
+            mingw-w64-clang-x86_64-toolchain
+            mingw-w64-clang-x86_64-llvm
+      - uses: cygwin/cygwin-install-action@master
+        with:
+          site: >-
+            http://mirrors.kernel.org/sourceware/cygwin/
+            file://${{ github.workspace }}/pkgs
+          check-sig: false
+          packages: |
+            cygutils-extra
+            cmake
+            calm
+            cygport
+            flexdll
+            gdb
+            git
+            make
+            ninja
+            ocaml
+            python3
+            libxml2-devel
+            zlib-devel
+            libzstd-devel
+            vim
+            python39-sphinx
+            python39-pytz
+            python39-tomli
+            libcurl-devel
+            libpcre2-devel
+            libssh2-devel
+            libssl-devel=3.0.16-2
+            libssl3=3.0.16-2
+            openssl=3.0.16-2
+            libllvm20.1=20.1.5-1
+            libllvm-devel=20.1.5-1
+            llvm=20.1.5-1
+
+      - name: build
+        run: |
+          export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
+          mv "$GITHUB_WORKSPACE/pkgs" .
+          mkdir -p pkgs/x86_64/release
+          cp "$GITHUB_WORKSPACE/"* .
+          mkdir bin
+          gcc -o bin/llvm-config.exe llvm-config-wrapper.c
+          gcc -o bin/gcc.exe wrapper.c
+          for b in g++ ar ranlib x86_64-pc-cygwin-gcc curl-config; do
+            ln bin/gcc.exe bin/${b}.exe
+          done
+          curl -LO "$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          tar -Jxf rustc-nightly-src.tar.xz
+          cd rustc-nightly-src
+          MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -m "$GITHUB_WORKSPACE")" envsubst < ../bootstrap.toml > bootstrap.toml
+          export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/clang64/bin:$PATH"
+          PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
+          PKG_CONFIG="$(cygpath -w /usr/bin/pkgconf.exe)" \
+          LIBGIT2_NO_VENDOR=1 \
+          OPENSSL_DIR="$(cygpath -w /usr)" \
+          OPENSSL_LIB_DIR="$(cygpath -w /usr/lib)" \
+          OPENSSL_STATIC=0 \
+          DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
+          python x.py install --stage 2
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
