@@ -8,8 +8,22 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          workflow: bootstrap_llvm.yml
+          workflow_conclusion: completed
+          branch: main
+          event: workflow_dispatch
+          name: packages
+          path: pkgs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: cygwin/cygwin-install-action@master
         with:
+          site: >-
+            http://mirrors.kernel.org/sourceware/cygwin/
+            file://${{ github.workspace }}/pkgs
+          check-sig: false
           packages: |
             cygutils-extra
             cmake
@@ -38,6 +52,7 @@ jobs:
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
           git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
           git clone https://cygwin.com/git/cygwin-packages/curl
