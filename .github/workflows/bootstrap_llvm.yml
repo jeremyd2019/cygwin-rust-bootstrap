@@ -50,7 +50,7 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
@@ -117,7 +117,7 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
@@ -187,7 +187,7 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
@@ -257,7 +257,7 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
