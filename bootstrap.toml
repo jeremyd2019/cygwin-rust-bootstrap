@@ -5,18 +5,18 @@ profile = "dist"
 change-id = 138986
 
 [build]
-cargo = "$MSYS2_ROOT/clang64/bin/cargo.exe"
-rustc = "$MSYS2_ROOT/clang64/bin/rustc.exe"
-rustfmt = "$MSYS2_ROOT/clang64/bin/rustfmt.exe"
-cargo-clippy = "$MSYS2_ROOT/clang64/bin/cargo-clippy.exe"
+#cargo = "$MSYS2_ROOT/clang64/bin/cargo.exe"
+#rustc = "$MSYS2_ROOT/clang64/bin/rustc.exe"
+#rustfmt = "$MSYS2_ROOT/clang64/bin/rustfmt.exe"
+#cargo-clippy = "$MSYS2_ROOT/clang64/bin/cargo-clippy.exe"
 submodules = false
-build = "x86_64-pc-windows-gnullvm"
+build = "x86_64-pc-windows-gnu"
 host = ["x86_64-pc-cygwin"]
 target = [
   "x86_64-pc-cygwin",
 ]
 build-dir = "build-Cygwin"
-python = "$MSYS2_ROOT/clang64/bin/python.exe"
+python = "$MSYS2_ROOT/mingw64/bin/python.exe"
 locked-deps = true
 #vendor = true
 tools = [
@@ -58,13 +58,13 @@ compression-formats = ["gz"]
 compression-profile = "fast"
 include-mingw-linker = false
 
-[target.x86_64-pc-windows-gnullvm]
-cc = "$MSYS2_ROOT/clang64/bin/clang.exe"
-cxx = "$MSYS2_ROOT/clang64/bin/clang++.exe"
-ar = "$MSYS2_ROOT/clang64/bin/llvm-ar.exe"
-ranlib = "$MSYS2_ROOT/clang64/bin/llvm-ranlib.exe"
-linker = "$MSYS2_ROOT/clang64/bin/clang.exe"
-llvm-config = "$MSYS2_ROOT/clang64/bin/llvm-config.exe"
+[target.x86_64-pc-windows-gnu]
+cc = "$MSYS2_ROOT/mingw64/bin/clang.exe"
+cxx = "$MSYS2_ROOT/mingw64/bin/clang++.exe"
+ar = "$MSYS2_ROOT/mingw64/bin/llvm-ar.exe"
+ranlib = "$MSYS2_ROOT/mingw64/bin/llvm-ranlib.exe"
+linker = "$MSYS2_ROOT/mingw64/bin/clang.exe"
+llvm-config = "$MSYS2_ROOT/mingw64/bin/llvm-config.exe"
 crt-static = true
 
 [target.x86_64-pc-cygwin]
