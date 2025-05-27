@@ -16,7 +16,7 @@ target = [
   "x86_64-pc-cygwin",
 ]
 build-dir = "build-Cygwin"
-python = "/usr/bin/python"
+python = "/usr/bin/python3"
 locked-deps = true
 #vendor = true
 tools = [
