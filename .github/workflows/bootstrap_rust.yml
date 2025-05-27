@@ -18,7 +18,8 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -68,13 +69,13 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           path: |
-            d:/cygwin/home/runneradmin/pkgs/
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
   cross_rust:
     runs-on: windows-latest
@@ -97,7 +98,8 @@ jobs:
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-clang
-      - uses: cygwin/cygwin-install-action@master
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
@@ -167,9 +169,9 @@ jobs:
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py install --stage 2
           cd build-Cygwin/dest-rust && tar -Jcf ~/rust-prefix.tar.xz * 
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: ${{steps.cygwin.outputs.root}}\bin\bash.exe -leo pipefail -o igncr '{0}'
       - uses: actions/upload-artifact@v4
         with:
           name: rust-prefix
           path: |
-            d:/cygwin/home/runneradmin/rust-prefix.tar.xz
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
