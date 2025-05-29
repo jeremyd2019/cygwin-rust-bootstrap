@@ -38,6 +38,11 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: cygwin
+          path: test-cygwin
+
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
@@ -69,14 +74,12 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-      - name: kill cygwin
-        shell: cmd
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          taskkill /f /fi "MODULES eq cygwin1.dll"
-      - uses: actions/download-artifact@v4
-        with:
-          name: cygwin
-          path: ${{ steps.cygwin.outputs.root }}
+          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
@@ -116,6 +119,10 @@ jobs:
         with:
           name: packages
           path: pkgs
+      - uses: actions/download-artifact@v4
+        with:
+          name: cygwin
+          path: test-cygwin
       - id: msys2
         uses: msys2/setup-msys2@v2
         with:
@@ -164,14 +171,12 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
-      - name: kill cygwin
-        shell: cmd
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          taskkill /f /fi "MODULES eq cygwin1.dll"
-      - uses: actions/download-artifact@v4
-        with:
-          name: cygwin
-          path: ${{ steps.cygwin.outputs.root }}
+          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
@@ -224,6 +229,10 @@ jobs:
           path: pkgs
       - uses: actions/download-artifact@v4
         with:
+          name: cygwin
+          path: test-cygwin
+      - uses: actions/download-artifact@v4
+        with:
           name: rust-prefix
           path: rust-prefix
       - id: cygwin
@@ -264,14 +273,12 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
-      - name: kill cygwin
-        shell: cmd
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          taskkill /f /fi "MODULES eq cygwin1.dll"
-      - uses: actions/download-artifact@v4
-        with:
-          name: cygwin
-          path: ${{ steps.cygwin.outputs.root }}
+          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
