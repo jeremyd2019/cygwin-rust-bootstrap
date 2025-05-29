@@ -179,7 +179,7 @@ jobs:
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
           mv "$GITHUB_WORKSPACE/pkgs" .
           mkdir -p pkgs/x86_64/release
-          cp "$GITHUB_WORKSPACE/"* .
+          find "$GITHUB_WORKSPACE/" -maxdepth 1 -type f ! -name .\* -exec cp -t . '{}' +
           mkdir bin
           gcc -o bin/llvm-config.exe llvm-config-wrapper.c
           gcc -o bin/gcc.exe wrapper.c
