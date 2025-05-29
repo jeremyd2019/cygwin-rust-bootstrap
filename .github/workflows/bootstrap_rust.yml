@@ -3,8 +3,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  get_cygwin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: cygwin
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cygwin
+          path: |
+            cygwin/
+
   curl_libgit2:
     runs-on: windows-latest
+    needs: get_cygwin
 
     steps:
       - run: git config --global core.autocrlf input
@@ -49,17 +69,10 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
+          name: cygwin
           path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          use_unzip: true
 
       - name: build
         run: |
@@ -147,17 +160,10 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
+          name: cygwin
           path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          use_unzip: true
 
       - name: build
         run: |
@@ -250,17 +256,10 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
+          name: cygwin
           path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          use_unzip: true
 
       - name: build
         run: |
