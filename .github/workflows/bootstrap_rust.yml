@@ -23,7 +23,7 @@ jobs:
           repo: jeremyd2019/cygwin
           workflow: cygwin.yml
           workflow_conclusion: success
-          branch: cygwin-posix-spawn
+          branch: cygwin-3.6.2-posix-spawn
           event: push
           name: cygwin-install-x86_64
           path: test-cygwin
@@ -37,8 +37,6 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
-            cygwin=3.7.0-0.109.g70427b85139f
-            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -134,8 +132,6 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
-            cygwin=3.7.0-0.109.g70427b85139f
-            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -238,8 +234,6 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
-            cygwin=3.7.0-0.109.g70427b85139f
-            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
