@@ -59,6 +59,7 @@ jobs:
           name: cygwin-install-x86_64
           path: ${{ steps.cygwin.outputs.root }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_unzip: true
 
       - name: build
         run: |
@@ -156,6 +157,7 @@ jobs:
           name: cygwin-install-x86_64
           path: ${{ steps.cygwin.outputs.root }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_unzip: true
 
       - name: build
         run: |
@@ -258,6 +260,7 @@ jobs:
           name: cygwin-install-x86_64
           path: ${{ steps.cygwin.outputs.root }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_unzip: true
 
       - name: build
         run: |
