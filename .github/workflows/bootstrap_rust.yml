@@ -69,6 +69,10 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
+      - name: kill cygwin
+        shell: cmd
+        run: |
+          taskkill /f /fi "MODULES eq cygwin1.dll"
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
@@ -160,6 +164,10 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
+      - name: kill cygwin
+        shell: cmd
+        run: |
+          taskkill /f /fi "MODULES eq cygwin1.dll"
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
@@ -256,6 +264,10 @@ jobs:
             llvm=20.1.5-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
+      - name: kill cygwin
+        shell: cmd
+        run: |
+          taskkill /f /fi "MODULES eq cygwin1.dll"
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
