@@ -37,6 +37,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -65,7 +67,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
@@ -132,6 +134,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -167,7 +171,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
@@ -234,6 +238,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -269,7 +275,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
