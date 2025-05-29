@@ -3,28 +3,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  get_cygwin:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dawidd6/action-download-artifact@v9
-        with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
-          path: cygwin
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cygwin
-          path: |
-            cygwin/
-
   curl_libgit2:
     runs-on: windows-latest
-    needs: get_cygwin
 
     steps:
       - run: git config --global core.autocrlf input
@@ -38,10 +18,16 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/download-artifact@v4
+      - uses: dawidd6/action-download-artifact@v9
         with:
-          name: cygwin
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
           path: test-cygwin
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
@@ -79,7 +65,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
+          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
@@ -107,6 +93,11 @@ jobs:
           name: packages
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cygwin
+          path: |
+            test-cygwin/
 
   cross_rust:
     runs-on: windows-latest
@@ -176,7 +167,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
+          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
@@ -278,7 +269,7 @@ jobs:
           CHERE_INVOKING: 1
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
-          tar -C test-cygwin -cf - | tar -C /d/cygwin -xvf -
+          tar -C test-cygwin -cf - . | tar -C /d/cygwin -xvf -
 
       - name: build
         run: |
