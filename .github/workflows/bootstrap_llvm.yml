@@ -36,7 +36,17 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-          
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: ${{ steps.cygwin.outputs.root }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -102,7 +112,17 @@ jobs:
             libllvm20.1=20.1.5-1
             libllvm-devel=20.1.5-1
             llvm=20.1.5-1
-          
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: ${{ steps.cygwin.outputs.root }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -171,8 +191,17 @@ jobs:
             llvm=20.1.5-1
             libclang20.1=20.1.5-1
             clang=20.1.5-1
-            
-          
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: ${{ steps.cygwin.outputs.root }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -242,6 +271,16 @@ jobs:
             libclang20.1=20.1.5-1
             clang=20.1.5-1
             libpolly-devel=20.1.5-1
+      - uses: dawidd6/action-download-artifact@v9
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: ${{ steps.cygwin.outputs.root }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: build
         run: |
