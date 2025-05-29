@@ -14,6 +14,8 @@ jobs:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -44,8 +46,14 @@ jobs:
           branch: cygwin-posix-spawn
           event: push
           name: cygwin-install-x86_64
-          path: ${{ steps.cygwin.outputs.root }}
+          path: test-cygwin
           github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
+        run: |
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
@@ -68,6 +76,11 @@ jobs:
           overwrite: true
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cygwin
+          path: |
+            test-cygwin/
 
   clang_bootstrap:
     runs-on: windows-latest
@@ -87,6 +100,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -112,16 +127,16 @@ jobs:
             libllvm20.1=20.1.5-1
             libllvm-devel=20.1.5-1
             llvm=20.1.5-1
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
-          path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          name: cygwin
+          path: test-cygwin
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
+        run: |
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
@@ -164,6 +179,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -191,16 +208,16 @@ jobs:
             llvm=20.1.5-1
             libclang20.1=20.1.5-1
             clang=20.1.5-1
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
-          path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          name: cygwin
+          path: test-cygwin
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
+        run: |
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
@@ -243,6 +260,8 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygwin=3.7.0-0.109.g70427b85139f
+            cygwin-devel=3.7.0-0.109.g70427b85139f
             cygutils-extra
             cmake
             calm
@@ -271,16 +290,16 @@ jobs:
             libclang20.1=20.1.5-1
             clang=20.1.5-1
             libpolly-devel=20.1.5-1
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: actions/download-artifact@v4
         with:
-          repo: jeremyd2019/cygwin
-          workflow: cygwin.yml
-          workflow_conclusion: success
-          branch: cygwin-posix-spawn
-          event: push
-          name: cygwin-install-x86_64
-          path: ${{ steps.cygwin.outputs.root }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          name: cygwin
+          path: test-cygwin
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
+        run: |
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: build
         run: |
