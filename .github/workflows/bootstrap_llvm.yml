@@ -46,10 +46,9 @@ jobs:
           mkdir -p pkgs/x86_64/release
           git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
           cd llvm
-          VERSION="$(sed -ne 's/^VERSION=//p' llvm.cygport)"
-          echo "llvm_version=${VERSION}" | tee ../pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           pip3 install --user myst_parser
           BOOTSTRAP=ON cygport llvm.cygport download all-test
+          echo llvm-*.x86_64 | sed -e 's/^llvm-\(.*\)\.x86_64$/llvm_version=\1/' | tee ../pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           cp -R llvm-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
@@ -104,9 +103,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
           
       - name: build
         run: |
@@ -171,11 +170,11 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}
             
           
       - name: build
@@ -241,12 +240,12 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
-            libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
 
       - name: build
         run: |
