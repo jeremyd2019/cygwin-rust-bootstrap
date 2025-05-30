@@ -20,7 +20,7 @@ python = "$MSYS2_ROOT/mingw64/bin/python.exe"
 locked-deps = true
 #vendor = true
 tools = [
-"clippy", "rustdoc", "rustfmt", "rust-analyzer-proc-macro-srv", "analysis", "src",
+"clippy", "rustdoc", "rustfmt", "rust-analyzer-proc-macro-srv", "analysis",
   "cargo",
 ]
 profiler = true
