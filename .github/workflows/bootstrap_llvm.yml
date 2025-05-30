@@ -120,9 +120,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.5-1
-            libllvm-devel=20.1.5-1
-            llvm=20.1.5-1
+            libllvm20.1=20.1.6-1
+            libllvm-devel=20.1.6-1
+            llvm=20.1.6-1
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
@@ -197,11 +197,11 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.5-1
-            libllvm-devel=20.1.5-1
-            llvm=20.1.5-1
-            libclang20.1=20.1.5-1
-            clang=20.1.5-1
+            libllvm20.1=20.1.6-1
+            libllvm-devel=20.1.6-1
+            llvm=20.1.6-1
+            libclang20.1=20.1.6-1
+            clang=20.1.6-1
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
@@ -276,12 +276,12 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.5-1
-            libllvm-devel=20.1.5-1
-            llvm=20.1.5-1
-            libclang20.1=20.1.5-1
-            clang=20.1.5-1
-            libpolly-devel=20.1.5-1
+            libllvm20.1=20.1.6-1
+            libllvm-devel=20.1.6-1
+            llvm=20.1.6-1
+            libclang20.1=20.1.6-1
+            clang=20.1.6-1
+            libpolly-devel=20.1.6-1
       - uses: actions/download-artifact@v4
         with:
           name: cygwin
