@@ -131,9 +131,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.5-1
-            libllvm-devel=20.1.5-1
-            llvm=20.1.5-1
+            libllvm20.1=20.1.6-1
+            libllvm-devel=20.1.6-1
+            llvm=20.1.6-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
 
@@ -223,9 +223,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.5-1
-            libllvm-devel=20.1.5-1
-            llvm=20.1.5-1
+            libllvm20.1=20.1.6-1
+            libllvm-devel=20.1.6-1
+            llvm=20.1.6-1
             libgit2_1_9=1.9.0-1
             libgit2-devel=1.9.0-1
 
