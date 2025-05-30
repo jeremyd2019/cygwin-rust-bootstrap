@@ -5,6 +5,10 @@ on:
 jobs:
   curl_libgit2:
     runs-on: windows-latest
+    outputs:
+      llvm_version: ${{ steps.build.outputs.llvm_version }}
+      curl_version: ${{ steps.build.outputs.curl_version }}
+      libgit2_version: ${{ steps.build.outputs.libgit2_version }}
 
     steps:
       - run: git config --global core.autocrlf input
@@ -67,20 +71,24 @@ jobs:
         run: |
           cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
-      - name: build
+      - id: build
+        name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
+          cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           git clone -b playground https://cygwin.com/git/cygwin-packages/libgit2
           git clone https://cygwin.com/git/cygwin-packages/curl
           cd curl
           sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
           awk -i inplace -F= -v OFS== '$1=="RELEASE" {$2++} 1' curl.cygport
           cygport curl.cygport download all-test
+          echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' >> "$GITHUB_OUTPUT"
           cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../libgit2
           cygport libgit2.cygport download all-test
+          echo libgit2-*.x86_64 | sed -e 's/^libgit2-\(.*\)\.x86_64$/libgit2_version=\1/' >> "$GITHUB_OUTPUT"
           cp -R libgit2-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
@@ -150,18 +158,18 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=8.13.0-2
-            libcurl4=8.13.0-2
+            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
+            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
             libpcre2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.6-1
-            libllvm-devel=20.1.6-1
-            llvm=20.1.6-1
-            libgit2_1_9=1.9.0-1
-            libgit2-devel=1.9.0-1
+            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
+            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
+            libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
@@ -209,7 +217,7 @@ jobs:
 
   native_rust:
     runs-on: windows-latest
-    needs: cross_rust
+    needs: [curl_libgit2, cross_rust]
 
     steps:
       - run: git config --global core.autocrlf input
@@ -252,18 +260,18 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=8.13.0-2
-            libcurl4=8.13.0-2
+            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
+            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
             libpcre2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.6-1
-            libllvm-devel=20.1.6-1
-            llvm=20.1.6-1
-            libgit2_1_9=1.9.0-1
-            libgit2-devel=1.9.0-1
+            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
+            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
+            libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
