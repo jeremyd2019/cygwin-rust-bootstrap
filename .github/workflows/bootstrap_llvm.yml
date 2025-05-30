@@ -6,6 +6,8 @@ jobs:
 
   llvm_bootstrap:
     runs-on: windows-latest
+    outputs:
+      llvm_version: ${{ steps.build.outputs.llvm_version }}
     steps:
       - run: git config --global core.autocrlf input
       - id: cygwin
@@ -37,12 +39,15 @@ jobs:
             libssl3=3.0.16-2
             openssl=3.0.16-2
           
-      - name: build
+      - id: build
+        name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mkdir -p pkgs/x86_64/release
           git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
           cd llvm
+          VERSION="$(sed -ne 's/^VERSION=//p' llvm.cygport)"
+          echo "llvm_version=${VERSION}" | tee ../pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           pip3 install --user myst_parser
           BOOTSTRAP=ON cygport llvm.cygport download all-test
           cp -R llvm-*.x86_64/dist/* ../pkgs/x86_64/release
@@ -99,9 +104,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.6-1
-            libllvm-devel=20.1.6-1
-            llvm=20.1.6-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
           
       - name: build
         run: |
@@ -128,7 +133,7 @@ jobs:
 
   llvm:
     runs-on: windows-latest
-    needs: clang_bootstrap
+    needs: [llvm_bootstrap, clang_bootstrap]
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/download-artifact@v4
@@ -166,11 +171,11 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.6-1
-            libllvm-devel=20.1.6-1
-            llvm=20.1.6-1
-            libclang20.1=20.1.6-1
-            clang=20.1.6-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
             
           
       - name: build
@@ -198,7 +203,7 @@ jobs:
 
   clang:
     runs-on: windows-latest
-    needs: llvm
+    needs: [llvm_bootstrap, llvm]
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/download-artifact@v4
@@ -236,12 +241,12 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=20.1.6-1
-            libllvm-devel=20.1.6-1
-            llvm=20.1.6-1
-            libclang20.1=20.1.6-1
-            clang=20.1.6-1
-            libpolly-devel=20.1.6-1
+            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
+            libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}-1
 
       - name: build
         run: |
