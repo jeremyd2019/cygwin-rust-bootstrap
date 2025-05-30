@@ -139,9 +139,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}-1
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}-1
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}-1
+            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
+            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
             libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
             libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
 
@@ -231,9 +231,9 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}-1
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}-1
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}-1
+            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
+            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
             libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
             libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
 
