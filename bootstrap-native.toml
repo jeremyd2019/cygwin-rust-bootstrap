@@ -18,7 +18,7 @@ target = [
 build-dir = "build-Cygwin"
 python = "/usr/bin/python3"
 locked-deps = true
-#vendor = true
+vendor = true
 tools = [
 "clippy", "rustdoc", "rustfmt", "rust-analyzer-proc-macro-srv", "analysis", "src",
   "cargo",
