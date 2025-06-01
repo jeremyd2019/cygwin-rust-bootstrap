@@ -3,12 +3,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  curl_libgit2:
+  curl:
     runs-on: windows-latest
     outputs:
       llvm_version: ${{ steps.build.outputs.llvm_version }}
       curl_version: ${{ steps.build.outputs.curl_version }}
-      libgit2_version: ${{ steps.build.outputs.libgit2_version }}
 
     steps:
       - run: git config --global core.autocrlf input
@@ -78,7 +77,6 @@ jobs:
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
           cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
-          git clone -b playground git://cygwin.com/git/cygwin-packages/libgit2
           git clone git://cygwin.com/git/cygwin-packages/curl
           cd curl
           sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
@@ -86,10 +84,6 @@ jobs:
           cygport curl.cygport download all-test
           echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' >> "$GITHUB_OUTPUT"
           cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
-          cd ../libgit2
-          cygport libgit2.cygport download all-test
-          echo libgit2-*.x86_64 | sed -e 's/^libgit2-\(.*\)\.x86_64$/libgit2_version=\1/' >> "$GITHUB_OUTPUT"
-          cp -R libgit2-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
@@ -109,7 +103,7 @@ jobs:
 
   cross_rust:
     runs-on: windows-latest
-    needs: curl_libgit2
+    needs: curl
 
     steps:
       - run: git config --global core.autocrlf input
@@ -158,18 +152,17 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
-            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
-            libpcre2-devel
+            libgit2_1.9
+            libgit2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
-            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libcurl-devel=${{needs.curl.outputs.curl_version}}
+            libcurl4=${{needs.curl.outputs.curl_version}}
+            libllvm20.1=${{needs.curl.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl.outputs.llvm_version}}
+            llvm=${{needs.curl.outputs.llvm_version}}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
@@ -191,9 +184,10 @@ jobs:
             ln bin/gcc.exe bin/${b}.exe
           done
           curl -LO "$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          curl -LO https://patch-diff.githubusercontent.com/raw/rust-lang/rust/pull/141846.patch
           tar -Jxf rustc-nightly-src.tar.xz
           cd rustc-nightly-src
-          sed -i -e 's/\(has_thread_local: \)true/\1false/' compiler/rustc_target/src/spec/base/cygwin.rs
+          patch -p1 -i ../141846.patch
           MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst < ../bootstrap.toml > bootstrap.toml
           export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
@@ -215,7 +209,7 @@ jobs:
 
   native_rust:
     runs-on: windows-latest
-    needs: [curl_libgit2, cross_rust]
+    needs: [curl, cross_rust]
 
     steps:
       - run: git config --global core.autocrlf input
@@ -258,18 +252,17 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
-            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
-            libpcre2-devel
+            libgit2_1.9
+            libgit2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
-            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libcurl-devel=${{needs.curl.outputs.curl_version}}
+            libcurl4=${{needs.curl.outputs.curl_version}}
+            libllvm20.1=${{needs.curl.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl.outputs.llvm_version}}
+            llvm=${{needs.curl.outputs.llvm_version}}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
@@ -285,9 +278,10 @@ jobs:
           mkdir -p pkgs/x86_64/release
           (cd / && tar -Jxvf "$GITHUB_WORKSPACE/rust-prefix/rust-prefix.tar.xz" | grep -E -- '^usr/bin/[^/]+-[0-9a-f]{16}.dll$' | grep -v rustc_driver | xargs rm)
           rebase -s /usr/bin/rustc_driver*.dll
+          curl -LO https://patch-diff.githubusercontent.com/raw/rust-lang/rust/pull/141846.patch
           tar -Jxf "$GITHUB_WORKSPACE/rust-prefix/rustc-nightly-src.tar.xz"
           cd rustc-nightly-src
-          sed -i -e 's/\(has_thread_local: \)true/\1false/' compiler/rustc_target/src/spec/base/cygwin.rs
+          patch -p1 -i ../141846.patch
           cp "$GITHUB_WORKSPACE/bootstrap-native.toml" bootstrap.toml
           LIBGIT2_NO_VENDOR=1 \
           OPENSSL_STATIC=0 \
