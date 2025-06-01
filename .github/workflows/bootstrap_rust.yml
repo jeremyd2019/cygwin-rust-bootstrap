@@ -3,12 +3,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  curl_libgit2:
+  curl:
     runs-on: windows-latest
     outputs:
       llvm_version: ${{ steps.build.outputs.llvm_version }}
       curl_version: ${{ steps.build.outputs.curl_version }}
-      libgit2_version: ${{ steps.build.outputs.libgit2_version }}
 
     steps:
       - run: git config --global core.autocrlf input
@@ -61,7 +60,6 @@ jobs:
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
           cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
-          git clone -b playground git://cygwin.com/git/cygwin-packages/libgit2
           git clone git://cygwin.com/git/cygwin-packages/curl
           cd curl
           sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
@@ -69,10 +67,6 @@ jobs:
           cygport curl.cygport download all-test
           echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' >> "$GITHUB_OUTPUT"
           cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
-          cd ../libgit2
-          cygport libgit2.cygport download all-test
-          echo libgit2-*.x86_64 | sed -e 's/^libgit2-\(.*\)\.x86_64$/libgit2_version=\1/' >> "$GITHUB_OUTPUT"
-          cp -R libgit2-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
@@ -87,7 +81,7 @@ jobs:
 
   cross_rust:
     runs-on: windows-latest
-    needs: curl_libgit2
+    needs: curl
 
     steps:
       - run: git config --global core.autocrlf input
@@ -132,18 +126,17 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
-            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
-            libpcre2-devel
+            libgit2_1.9
+            libgit2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
-            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libcurl-devel=${{needs.curl.outputs.curl_version}}
+            libcurl4=${{needs.curl.outputs.curl_version}}
+            libllvm20.1=${{needs.curl.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl.outputs.llvm_version}}
+            llvm=${{needs.curl.outputs.llvm_version}}
 
       - name: build
         run: |
@@ -184,7 +177,7 @@ jobs:
 
   native_rust:
     runs-on: windows-latest
-    needs: [curl_libgit2, cross_rust]
+    needs: [curl, cross_rust]
 
     steps:
       - run: git config --global core.autocrlf input
@@ -223,18 +216,18 @@ jobs:
             python39-sphinx
             python39-pytz
             python39-tomli
-            libcurl-devel=${{needs.curl_libgit2.outputs.curl_version}}
-            libcurl4=${{needs.curl_libgit2.outputs.curl_version}}
-            libpcre2-devel
+            libgit2_1.9
+            libgit2-devel
             libssh2-devel
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
-            llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
-            libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libcurl-devel=${{needs.curl.outputs.curl_version}}
+            libcurl4=${{needs.curl.outputs.curl_version}}
+            libllvm20.1=${{needs.curl.outputs.llvm_version}}
+            libllvm-devel=${{needs.curl.outputs.llvm_version}}
+            llvm=${{needs.curl.outputs.llvm_version}}
+
 
       - name: build
         run: |
