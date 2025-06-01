@@ -142,7 +142,7 @@ jobs:
             libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
             libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
             llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
             libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
 
       - name: build
@@ -232,7 +232,7 @@ jobs:
             libllvm20.1=${{needs.curl_libgit2.outputs.llvm_version}}
             libllvm-devel=${{needs.curl_libgit2.outputs.llvm_version}}
             llvm=${{needs.curl_libgit2.outputs.llvm_version}}
-            libgit2_1_9=${{needs.curl_libgit2.outputs.libgit2_version}}
+            libgit2_1.9=${{needs.curl_libgit2.outputs.libgit2_version}}
             libgit2-devel=${{needs.curl_libgit2.outputs.libgit2_version}}
 
       - name: build
