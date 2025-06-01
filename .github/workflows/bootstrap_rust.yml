@@ -20,39 +20,6 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: cygwin
-        if: false
-        uses: cygwin/cygwin-install-action@master
-        with:
-          site: >-
-            http://mirrors.kernel.org/sourceware/cygwin/
-            file://${{ github.workspace }}/pkgs
-          check-sig: false
-          packages: |
-            cygutils-extra
-            cmake
-            calm
-            cygport
-            flexdll
-            gdb
-            git
-            make
-            ninja
-            ocaml
-            python3
-            libxml2-devel
-            zlib-devel
-            libzstd-devel
-            vim
-            python39-sphinx
-            python39-pytz
-            libcurl-devel
-            libpcre2-devel
-            libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
-
       - id: build
         name: build
         run: cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
@@ -209,6 +176,7 @@ jobs:
             openssl=3.0.16-2
             libcurl-devel
             libcurl4
+            curl
             libllvm20.1=${{needs.curl.outputs.llvm_version}}
             libllvm-devel=${{needs.curl.outputs.llvm_version}}
             llvm=${{needs.curl.outputs.llvm_version}}
@@ -222,6 +190,10 @@ jobs:
           mkdir -p pkgs/x86_64/release
           (cd / && tar -Jxvf "$GITHUB_WORKSPACE/rust-prefix/rust-prefix.tar.xz" | grep -E -- '^usr/bin/[^/]+-[0-9a-f]{16}.dll$' | grep -v rustc_driver | xargs rm)
           rebase -s /usr/bin/rustc_driver*.dll
+          ls -Ggl /bin/openssl
+          openssl version
+          ls -Ggl /bin/curl
+          curl -V
           curl -LO https://patch-diff.githubusercontent.com/raw/rust-lang/rust/pull/141846.patch
           tar -Jxf "$GITHUB_WORKSPACE/rust-prefix/rustc-nightly-src.tar.xz"
           cd rustc-nightly-src
