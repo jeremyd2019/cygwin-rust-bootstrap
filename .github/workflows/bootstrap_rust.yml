@@ -7,7 +7,6 @@ jobs:
     runs-on: windows-latest
     outputs:
       llvm_version: ${{ steps.build.outputs.llvm_version }}
-      curl_version: ${{ steps.build.outputs.curl_version }}
 
     steps:
       - run: git config --global core.autocrlf input
@@ -22,6 +21,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: cygwin
+        if: false
         uses: cygwin/cygwin-install-action@master
         with:
           site: >-
@@ -58,8 +58,8 @@ jobs:
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
-          mkdir -p pkgs/x86_64/release
           cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
+          exit 0
           git clone git://cygwin.com/git/cygwin-packages/curl
           cd curl
           sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
@@ -71,7 +71,7 @@ jobs:
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
           bzip2 <x86_64/setup.ini >x86_64/setup.bz2
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: bash
 
       - uses: actions/upload-artifact@v4
         with:
@@ -132,8 +132,8 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libcurl-devel=${{needs.curl.outputs.curl_version}}
-            libcurl4=${{needs.curl.outputs.curl_version}}
+            libcurl-devel
+            libcurl4
             libllvm20.1=${{needs.curl.outputs.llvm_version}}
             libllvm-devel=${{needs.curl.outputs.llvm_version}}
             llvm=${{needs.curl.outputs.llvm_version}}
@@ -222,8 +222,8 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libcurl-devel=${{needs.curl.outputs.curl_version}}
-            libcurl4=${{needs.curl.outputs.curl_version}}
+            libcurl-devel
+            libcurl4
             libllvm20.1=${{needs.curl.outputs.llvm_version}}
             libllvm-devel=${{needs.curl.outputs.llvm_version}}
             llvm=${{needs.curl.outputs.llvm_version}}
