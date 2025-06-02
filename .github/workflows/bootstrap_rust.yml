@@ -151,7 +151,9 @@ jobs:
           for b in g++ ar ranlib x86_64-pc-cygwin-gcc curl-config; do
             ln bin/gcc.exe bin/${b}.exe
           done
-          curl -LO "$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          RUST_URL="$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          echo "$RUST_URL" | tee rust-url.txt
+          curl -LO "$RUST_URL"
           tar -Jxf rustc-nightly-src.tar.xz
           cd rustc-nightly-src
           MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst < ../bootstrap.toml > bootstrap.toml
@@ -170,6 +172,7 @@ jobs:
         with:
           name: rust-prefix
           path: |
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-nightly-src.tar.xz
 
@@ -249,5 +252,5 @@ jobs:
           name: rust-prefix
           overwrite: true
           path: |
+            rust-prefix/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
-            ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-nightly-src.tar.xz
