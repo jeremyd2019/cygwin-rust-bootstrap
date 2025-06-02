@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
-      - uses: dawidd6/action-download-artifact@v9
+      - uses: dawidd6/action-download-artifact@v10
         with:
           workflow: bootstrap_llvm.yml
           workflow_conclusion: success
-          branch: main
-          event: workflow_dispatch
+          branch: ${{ github.ref_name }}
+          event: ${{ github.event_name }}
           name: packages
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
