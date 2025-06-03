@@ -235,6 +235,7 @@ jobs:
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
           mv "$GITHUB_WORKSPACE/pkgs" .
           mkdir -p pkgs/x86_64/release
+          cp "$GITHUB_WORKSPACE/rust-prefix/rust-url.txt" .
           (cd / && tar -Jxvf "$GITHUB_WORKSPACE/rust-prefix/rust-prefix.tar.xz" | grep -E -- '^usr/bin/[^/]+-[0-9a-f]{16}.dll$' | grep -v rustc_driver | xargs rm)
           rebase -s /usr/bin/rustc_driver*.dll
           tar -Jxf "$GITHUB_WORKSPACE/rust-prefix/rustc-nightly-src.tar.xz"
@@ -251,5 +252,5 @@ jobs:
           name: rust-prefix
           overwrite: true
           path: |
-            rust-prefix/rust-url.txt
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
