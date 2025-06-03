@@ -61,7 +61,7 @@ jobs:
           cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           git clone git://cygwin.com/git/cygwin-packages/curl
           cd curl
-          sed -i -e 's|^PATCH_URI=$|&"https://raw.githubusercontent.com/msys2/MSYS2-packages/9768c4d41b4641b1f2008f3b80d9705406d4f562/curl/openssl-no-cleanup.patch"|' curl.cygport
+          sed -i -e 's|^PATCH_URI=$|&"https://github.com/curl/curl/commit/7a30481760f1f7bfb7928d0b22d49a5ae263386f.patch"|' curl.cygport
           awk -i inplace -F= -v OFS== '$1=="RELEASE" {$2++} 1' curl.cygport
           cygport curl.cygport download all-test
           echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' >> "$GITHUB_OUTPUT"
