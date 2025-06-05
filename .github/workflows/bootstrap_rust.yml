@@ -105,6 +105,10 @@ jobs:
           path: |
             test-cygwin/
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   cross_rust:
     runs-on: windows-latest
     needs: curl
@@ -212,6 +216,10 @@ jobs:
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-nightly-src.tar.xz
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   native_rust:
     runs-on: windows-latest
     needs: [curl, cross_rust]
@@ -300,3 +308,7 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd

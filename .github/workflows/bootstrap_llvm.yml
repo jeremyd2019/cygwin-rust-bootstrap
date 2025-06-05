@@ -1,5 +1,7 @@
 name: Bootstrap LLVM
 on:
+  schedule:
+    - cron: '21 22 * * 0'
   workflow_dispatch:
 
 jobs:
@@ -84,6 +86,10 @@ jobs:
           path: |
             test-cygwin/
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   clang_bootstrap:
     runs-on: windows-latest
     needs: llvm_bootstrap
@@ -93,7 +99,7 @@ jobs:
         with:
           name: packages
           path: pkgs
-          
+
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
@@ -160,6 +166,10 @@ jobs:
           overwrite: true
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
 
   llvm:
     runs-on: windows-latest
@@ -239,6 +249,10 @@ jobs:
           overwrite: true
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
 
   clang:
     runs-on: windows-latest
@@ -320,4 +334,6 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
-
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
