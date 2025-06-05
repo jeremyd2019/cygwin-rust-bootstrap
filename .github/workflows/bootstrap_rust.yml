@@ -83,6 +83,10 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   cross_rust:
     runs-on: windows-latest
     needs: curl
@@ -180,6 +184,10 @@ jobs:
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-nightly-src.tar.xz
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   native_rust:
     runs-on: windows-latest
     needs: [curl, cross_rust]
@@ -233,7 +241,6 @@ jobs:
             libllvm-devel=${{needs.curl.outputs.llvm_version}}
             llvm=${{needs.curl.outputs.llvm_version}}
 
-
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -259,3 +266,7 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
