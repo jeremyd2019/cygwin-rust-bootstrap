@@ -27,7 +27,7 @@ jobs:
           repo: jeremyd2019/cygwin
           workflow: cygwin.yml
           workflow_conclusion: success
-          branch: cygwin-3.6.2-posix-spawn
+          branch: cygwin-3.6.3-posix-spawn
           event: push
           name: cygwin-install-x86_64
           path: test-cygwin
