@@ -84,7 +84,7 @@ jobs:
             echo "Curl updated" >&2
             exit 2
           fi
-          sed -i -e 's|^VERSION=8.14.0$|VERSION=8.14.1|' -e 's|^PKG_IGNORE=.*$|& usr/share/man/man1/runtests.1*|' curl.cygport
+          sed -i -e 's|^VERSION=8.14.0$|VERSION=8.14.1|' -e 's|^PKG_IGNORE=\(.*\)$|PKG_IGNORE="\1 usr/share/man/man1/runtests.1*"|' curl.cygport
           cygport curl.cygport download all-test
           echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' | tee ../pkgs/curl_version.txt >> "$GITHUB_OUTPUT"
           cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
