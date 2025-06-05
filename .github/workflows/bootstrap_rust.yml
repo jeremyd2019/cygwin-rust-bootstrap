@@ -63,10 +63,13 @@ jobs:
           cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           git clone git://cygwin.com/git/cygwin-packages/curl
           cd curl
-          sed -i -e 's|^PATCH_URI=$|&"https://github.com/curl/curl/commit/7a30481760f1f7bfb7928d0b22d49a5ae263386f.patch"|' curl.cygport
-          awk -i inplace -F= -v OFS== '$1=="RELEASE" {$2++} 1' curl.cygport
+          if ! grep -qE '^VERSION=8.14.0$' curl.cygport; then
+            echo "Curl updated" >&2
+            exit 2
+          fi
+          sed -i -e 's|^VERSION=8.14.0$|VERSION=8.14.1|' curl.cygport
           cygport curl.cygport download all-test
-          echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' >> "$GITHUB_OUTPUT"
+          echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' | tee ../pkgs/curl_version.txt >> "$GITHUB_OUTPUT"
           cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
