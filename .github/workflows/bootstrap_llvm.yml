@@ -1,5 +1,7 @@
 name: Bootstrap LLVM
 on:
+  schedule:
+    - cron: '21 22 * * 0'
   workflow_dispatch:
 
 jobs:
@@ -38,7 +40,7 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-          
+
       - id: build
         name: build
         run: |
@@ -63,6 +65,10 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
   clang_bootstrap:
     runs-on: windows-latest
     needs: llvm_bootstrap
@@ -72,7 +78,7 @@ jobs:
         with:
           name: packages
           path: pkgs
-          
+
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
@@ -106,7 +112,7 @@ jobs:
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-          
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -129,6 +135,10 @@ jobs:
           overwrite: true
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
 
   llvm:
     runs-on: windows-latest
@@ -175,8 +185,7 @@ jobs:
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             clang=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            
-          
+
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
@@ -199,6 +208,10 @@ jobs:
           overwrite: true
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
 
   clang:
     runs-on: windows-latest
@@ -270,4 +283,6 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
 
-
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
