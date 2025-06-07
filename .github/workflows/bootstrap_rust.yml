@@ -5,14 +5,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  curl:
-    runs-on: windows-latest
+  artifacts:
+    runs-on: ubuntu-latest
     outputs:
-      llvm_version: ${{ steps.build.outputs.llvm_version }}
-      curl_version: ${{ steps.build.outputs.curl_version }}
+      llvm_version: ${{ steps.versions.outputs.llvm_version }}
 
     steps:
-      - run: git config --global core.autocrlf input
       - uses: dawidd6/action-download-artifact@v10
         with:
           workflow: bootstrap_llvm.yml
@@ -22,74 +20,19 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: cygwin
-        uses: cygwin/cygwin-install-action@master
-        with:
-          site: >-
-            http://mirrors.kernel.org/sourceware/cygwin/
-            file://${{ github.workspace }}/pkgs
-          check-sig: false
-          packages: |
-            cygutils-extra
-            cmake
-            calm
-            cygport
-            flexdll
-            gdb
-            git
-            make
-            ninja
-            ocaml
-            python3
-            libxml2-devel
-            zlib-devel
-            libzstd-devel
-            vim
-            python39-sphinx
-            python39-pytz
-            libcurl-devel
-            libpcre2-devel
-            libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
-
-      - id: build
-        name: build
-        run: |
-          export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
-          mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
-          mkdir -p pkgs/x86_64/release
-          cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
-          git clone git://cygwin.com/git/cygwin-packages/curl
-          cd curl
-          if ! grep -qE '^VERSION=8.14.0$' curl.cygport; then
-            echo "Curl updated" >&2
-            exit 2
-          fi
-          sed -i -e 's|^VERSION=8.14.0$|VERSION=8.14.1|' -e 's|^PKG_IGNORE=\(.*\)$|PKG_IGNORE="\1 usr/share/man/man1/runtests.1*"|' curl.cygport
-          cygport curl.cygport download all-test
-          echo curl-*.x86_64 | sed -e 's/^curl-\(.*\)\.x86_64$/curl_version=\1/' | tee ../pkgs/curl_version.txt >> "$GITHUB_OUTPUT"
-          cp -R curl-*.x86_64/dist/* ../pkgs/x86_64/release
-          cd ../pkgs
-          mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
-          bzip2 <x86_64/setup.ini >x86_64/setup.bz2
-          xz -6e <x86_64/setup.ini >x86_64/setup.xz
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+      - id: versions
+        name: versions
+        run: cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
           name: packages
           path: |
-            ${{steps.cygwin.outputs.root}}/home/runneradmin/pkgs/
-
-      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
-        if: always()
-        shell: cmd
+            pkgs/
 
   cross_rust:
     runs-on: windows-latest
-    needs: curl
+    needs: artifacts
 
     steps:
       - run: git config --global core.autocrlf input
@@ -105,7 +48,7 @@ jobs:
           update: true
           msystem: MINGW64
           install: >-
-            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-python
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-clang
       - id: cygwin
@@ -140,11 +83,10 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libcurl-devel=${{needs.curl.outputs.curl_version}}
-            libcurl4=${{needs.curl.outputs.curl_version}}
-            libllvm20.1=${{needs.curl.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl.outputs.llvm_version}}
-            llvm=${{needs.curl.outputs.llvm_version}}
+            libcurl-devel
+            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
+            llvm=${{needs.artifacts.outputs.llvm_version}}
 
       - name: build
         run: |
@@ -190,7 +132,7 @@ jobs:
 
   native_rust:
     runs-on: windows-latest
-    needs: [curl, cross_rust]
+    needs: [artifacts, cross_rust]
 
     steps:
       - run: git config --global core.autocrlf input
@@ -235,11 +177,10 @@ jobs:
             libssl-devel=3.0.16-2
             libssl3=3.0.16-2
             openssl=3.0.16-2
-            libcurl-devel=${{needs.curl.outputs.curl_version}}
-            libcurl4=${{needs.curl.outputs.curl_version}}
-            libllvm20.1=${{needs.curl.outputs.llvm_version}}
-            libllvm-devel=${{needs.curl.outputs.llvm_version}}
-            llvm=${{needs.curl.outputs.llvm_version}}
+            libcurl-devel
+            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
+            llvm=${{needs.artifacts.outputs.llvm_version}}
 
       - name: build
         run: |
