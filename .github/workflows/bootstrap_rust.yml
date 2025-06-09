@@ -94,7 +94,7 @@ jobs:
 
       - name: prepare cache
         run: |
-          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file*.*"
+          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file*"
           move /Y "${{ steps.cygwin.outputs.package-cache }}" .
         shell: cmd
       - uses: actions/cache/save@v4
