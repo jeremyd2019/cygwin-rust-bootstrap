@@ -53,8 +53,10 @@ jobs:
             mingw-w64-x86_64-clang
       - uses: actions/cache/restore@v4
         with:
-          key: cygwin-packages-
-          restore-keys: cygwin-packages-
+          key: cygwin-packages-asdf
+          restore-keys: |
+            cygwin-packages-asdf
+            cygwin-packages-
           path: D:\cygwin-packages
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
