@@ -167,6 +167,16 @@ jobs:
         with:
           name: rust-prefix
           path: rust-prefix
+
+      - uses: actions/cache/restore@v4
+        with:
+          key: cygwin-packages-
+          restore-keys: |
+            cygwin-packages-
+          path: cygwin-packages
+      - run: move /y cygwin-packages D:\
+        shell: cmd
+
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
@@ -203,6 +213,20 @@ jobs:
             libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
+
+      - name: prepare cache
+        run: |
+          if (Test-Path `${{ steps.cygwin.outputs.package-cache }}\file`* ) {
+            rm -r -fo `${{ steps.cygwin.outputs.package-cache }}\file`*
+          }
+          move "${{ steps.cygwin.outputs.package-cache }}" .
+      - uses: actions/cache/save@v4
+        with:
+          key: cygwin-packages-${{ hashFiles('cygwin-packages/**/setup.ini') }}
+          path: cygwin-packages
+      - name: post cache
+        run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
+        shell: cmd
 
       - name: build
         run: |
