@@ -51,6 +51,10 @@ jobs:
             mingw-w64-x86_64-python
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-clang
+      - uses: actions/cache/restore@v4
+        with:
+          key: cygwin-packages-
+          path: D:\cygwin-packages
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
@@ -87,6 +91,16 @@ jobs:
             libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
+
+      - name: prepare cache
+        run: |
+          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file"*.*
+          mklink /J cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
+        shell: cmd
+      - uses: actions/cache/save@v4
+        with:
+          key: cygwin-packages-${{ hashFiles('cygwin-packages/**') }}
+          path: ${{ steps.cygwin.outputs.package-cache }}
 
       - name: build
         run: |
