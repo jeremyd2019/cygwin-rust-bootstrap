@@ -94,15 +94,15 @@ jobs:
 
       - name: prepare cache
         run: |
-          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file"*.*
-          move /Y "${{ steps.cygwin.outputs.package-cache }}\" cygwin-packages
+          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file*.*"
+          move /Y "${{ steps.cygwin.outputs.package-cache }}" .
         shell: cmd
       - uses: actions/cache/save@v4
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**/setup.ini') }}
-          path: ${{ steps.cygwin.outputs.package-cache }}
+          path: cygwin-packages
       - name: post cache
-        run: move /Y cygwin-packages\ "${{ steps.cygwin.outputs.package-cache }}"
+        run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
         shell: cmd
 
       - name: build
