@@ -15,7 +15,7 @@ jobs:
         with:
           workflow: bootstrap_llvm.yml
           workflow_conclusion: success
-          branch: main
+          branch: ${{ github.ref_name }}
           name: packages
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
