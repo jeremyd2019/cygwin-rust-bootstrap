@@ -95,9 +95,10 @@ jobs:
 
       - name: prepare cache
         run: |
-          rmdir /s /q "${{ steps.cygwin.outputs.package-cache }}\file*"
-          move /Y "${{ steps.cygwin.outputs.package-cache }}" .
-        shell: cmd
+          if (Test-Path `${{ steps.cygwin.outputs.package-cache }}\file`* ) {
+            rm -r -fo `${{ steps.cygwin.outputs.package-cache }}\file`*
+          }
+          move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**/setup.ini') }}
