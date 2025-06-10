@@ -57,7 +57,7 @@ jobs:
           restore-keys: |
             cygwin-packages-
           path: cygwin-packages
-      - run: move /y cygwin-packages D:\
+      - run: IF EXIST cygwin-packages move /y cygwin-packages D:\
         shell: cmd
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
@@ -174,7 +174,7 @@ jobs:
           restore-keys: |
             cygwin-packages-
           path: cygwin-packages
-      - run: move /y cygwin-packages D:\
+      - run: IF EXIST cygwin-packages move /y cygwin-packages D:\
         shell: cmd
 
       - id: cygwin
