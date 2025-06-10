@@ -51,7 +51,8 @@ jobs:
             mingw-w64-x86_64-python
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-clang
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -103,6 +104,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
@@ -168,7 +170,8 @@ jobs:
           name: rust-prefix
           path: rust-prefix
 
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -221,6 +224,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
