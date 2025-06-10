@@ -12,7 +12,8 @@ jobs:
       llvm_version: ${{ steps.build.outputs.llvm_version }}
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -56,6 +57,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
@@ -100,7 +102,8 @@ jobs:
         with:
           name: packages
           path: pkgs
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -149,6 +152,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
@@ -192,7 +196,8 @@ jobs:
         with:
           name: packages
           path: pkgs
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -243,6 +248,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
@@ -286,7 +292,8 @@ jobs:
         with:
           name: packages
           path: pkgs
-      - uses: actions/cache/restore@v4
+      - id: cache-restore
+        uses: actions/cache/restore@v4
         with:
           key: cygwin-packages-
           restore-keys: |
@@ -338,6 +345,7 @@ jobs:
           }
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
         with:
           key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
