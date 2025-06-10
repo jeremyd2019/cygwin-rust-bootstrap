@@ -104,7 +104,7 @@ jobs:
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
         with:
-          key: cygwin-packages-${{ hashFiles('cygwin-packages/**/setup.ini') }}
+          key: cygwin-packages-${{ hashFiles('cygwin-packages/**' '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
       - name: post cache
         run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
@@ -222,7 +222,7 @@ jobs:
           move "${{ steps.cygwin.outputs.package-cache }}" .
       - uses: actions/cache/save@v4
         with:
-          key: cygwin-packages-${{ hashFiles('cygwin-packages/**/setup.ini') }}
+          key: cygwin-packages-${{ hashFiles('cygwin-packages/**' '!cygwin-packages/**/setup.ini') }}
           path: cygwin-packages
       - name: post cache
         run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
