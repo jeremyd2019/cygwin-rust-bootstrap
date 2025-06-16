@@ -20,7 +20,7 @@ jobs:
           path: pkgs
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: dawidd6/action-download-artifact@v10
+      - uses: dawidd6/action-download-artifact@v11
         with:
           repo: jeremyd2019/cygwin
           workflow: cygwin.yml
