@@ -11,7 +11,7 @@ jobs:
       llvm_version: ${{ steps.versions.outputs.llvm_version }}
 
     steps:
-      - uses: dawidd6/action-download-artifact@v10
+      - uses: dawidd6/action-download-artifact@v11
         with:
           workflow: bootstrap_llvm.yml
           workflow_conclusion: success
