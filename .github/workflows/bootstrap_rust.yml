@@ -71,24 +71,14 @@ jobs:
             mingw-w64-x86_64-python
             mingw-w64-x86_64-llvm
             mingw-w64-x86_64-clang
-      - id: cache-restore
-        uses: actions/cache/restore@v4
-        with:
-          key: cygwin-packages-
-          restore-keys: |
-            cygwin-packages-
-          path: cygwin-packages
-      - run: IF EXIST cygwin-packages move /y cygwin-packages D:\
-        shell: cmd
       - id: cygwin
-        uses: cygwin/cygwin-install-action@master
+        uses: jeremyd2019/caching-cygwin-install-action@clean-cache
         with:
           site: >-
             http://mirrors.kernel.org/sourceware/cygwin/
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
-            cygutils-extra
             cmake
             calm
             cygport
@@ -122,21 +112,6 @@ jobs:
         shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
         run: |
           cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
-
-      - name: prepare cache
-        run: |
-          if (Test-Path `${{ steps.cygwin.outputs.package-cache }}\file`* ) {
-            rm -r -fo `${{ steps.cygwin.outputs.package-cache }}\file`*
-          }
-          move "${{ steps.cygwin.outputs.package-cache }}" .
-      - uses: actions/cache/save@v4
-        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
-        with:
-          key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
-          path: cygwin-packages
-      - name: post cache
-        run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
-        shell: cmd
 
       - name: build
         run: |
