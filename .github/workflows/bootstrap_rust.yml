@@ -78,7 +78,7 @@ jobs:
             http://mirrors.kernel.org/sourceware/cygwin/
             file://${{ github.workspace }}/pkgs
           check-sig: false
-          add-to-cache: false
+          add-to-path: false
           packages: |
             cygutils-extra
             cmake
