@@ -79,6 +79,7 @@ jobs:
             file://${{ github.workspace }}/pkgs
           check-sig: false
           packages: |
+            cygutils-extra
             cmake
             calm
             cygport
