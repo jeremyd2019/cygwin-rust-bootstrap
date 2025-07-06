@@ -46,9 +46,7 @@ jobs:
             python39-pytz
             libpcre2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
       - uses: dawidd6/action-download-artifact@v11
         with:
           repo: jeremyd2019/cygwin
@@ -159,9 +157,7 @@ jobs:
             python39-pytz
             libpcre2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
@@ -263,9 +259,7 @@ jobs:
             python39-pytz
             libpcre2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
@@ -369,9 +363,7 @@ jobs:
             python39-pytz
             libpcre2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}

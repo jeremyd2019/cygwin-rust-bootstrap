@@ -109,9 +109,7 @@ jobs:
             libgit2_1.9
             libgit2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
             libcurl-devel
             libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
@@ -239,9 +237,7 @@ jobs:
             libgit2_1.9
             libgit2-devel
             libssh2-devel
-            libssl-devel=3.0.16-2
-            libssl3=3.0.16-2
-            openssl=3.0.16-2
+            libssl-devel
             libcurl-devel
             libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
