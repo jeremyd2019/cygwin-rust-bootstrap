@@ -94,6 +94,8 @@ jobs:
   clang_bootstrap:
     runs-on: windows-latest
     needs: llvm_bootstrap
+    outputs:
+      clang_version: ${{ steps.build.outputs.clang_version }}
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/download-artifact@v4
@@ -156,7 +158,8 @@ jobs:
         run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
         shell: cmd
 
-      - name: build
+      - id: build
+        name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
@@ -165,6 +168,7 @@ jobs:
           cd clang
           pip3 install --user myst_parser
           BOOTSTRAP=ON cygport clang.cygport download all-test
+          echo clang-*.x86_64 | sed -e 's/^clang-\(.*\)\.x86_64$/clang_version=\1/' | tee -a ../pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
           cp -R clang-*.x86_64/dist/* ../pkgs/x86_64/release
           cd ../pkgs
           mksetupini --arch x86_64 --inifile=x86_64/setup.ini --releasearea=. --disable-check=missing-required-package,missing-depended-package,missing-build-depended-package,missing-curr
@@ -232,8 +236,8 @@ jobs:
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
+            clang=${{needs.clang_bootstrap.outputs.clang_version}}
 
       - name: prepare cache
         run: |
@@ -279,7 +283,7 @@ jobs:
 
   clang:
     runs-on: windows-latest
-    needs: [llvm_bootstrap, llvm]
+    needs: [llvm_bootstrap, clang_bootstrap, llvm]
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/download-artifact@v4
@@ -326,8 +330,8 @@ jobs:
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libclang20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            clang=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
+            clang=${{needs.clang_bootstrap.outputs.clang_version}}
             libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
 
       - name: prepare cache
