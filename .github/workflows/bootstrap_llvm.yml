@@ -68,7 +68,7 @@ jobs:
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mkdir -p pkgs/x86_64/release
-          git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
+          git clone -b 21.1 https://cygwin.com/git/cygwin-packages/llvm
           cd llvm
           pip3 install --user myst_parser
           BOOTSTRAP=ON cygport llvm.cygport download all-test
@@ -164,7 +164,7 @@ jobs:
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
-          git clone -b playground https://cygwin.com/git/cygwin-packages/clang
+          git clone -b 21.1 https://cygwin.com/git/cygwin-packages/clang
           cd clang
           pip3 install --user myst_parser
           BOOTSTRAP=ON cygport clang.cygport download all-test
@@ -259,7 +259,7 @@ jobs:
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
-          git clone -b playground https://cygwin.com/git/cygwin-packages/llvm
+          git clone -b 21.1 https://cygwin.com/git/cygwin-packages/llvm
           cd llvm
           pip3 install --user myst_parser
           cygport llvm.cygport download all-test
@@ -354,7 +354,7 @@ jobs:
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
-          git clone -b playground https://cygwin.com/git/cygwin-packages/clang
+          git clone -b 21.1 https://cygwin.com/git/cygwin-packages/clang
           cd clang
           pip3 install --user myst_parser
           cygport clang.cygport download all-test
