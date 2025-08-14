@@ -52,12 +52,12 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
         with:
           name: packages
           path: pkgs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: cygwin
           path: test-cygwin
@@ -184,16 +184,16 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
         with:
           name: packages
           path: pkgs
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: cygwin
           path: test-cygwin
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: rust-prefix
           path: rust-prefix

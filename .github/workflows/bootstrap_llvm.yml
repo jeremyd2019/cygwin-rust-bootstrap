@@ -119,7 +119,7 @@ jobs:
       clang_version: ${{ steps.build.outputs.clang_version }}
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: packages
           path: pkgs
@@ -163,7 +163,7 @@ jobs:
             libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: cygwin
           path: test-cygwin
@@ -223,7 +223,7 @@ jobs:
     needs: [llvm_bootstrap, clang_bootstrap]
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: packages
           path: pkgs
@@ -269,7 +269,7 @@ jobs:
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
             clang=${{needs.clang_bootstrap.outputs.clang_version}}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: cygwin
           path: test-cygwin
@@ -327,7 +327,7 @@ jobs:
     needs: [llvm_bootstrap, clang_bootstrap, llvm]
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: packages
           path: pkgs
@@ -374,7 +374,7 @@ jobs:
             libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
             clang=${{needs.clang_bootstrap.outputs.clang_version}}
             libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: cygwin
           path: test-cygwin
