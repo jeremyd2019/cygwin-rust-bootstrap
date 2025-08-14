@@ -4,22 +4,14 @@ on:
     - cron: '43 10 * * *'
   workflow_dispatch:
 
+env:
+  LLVM_VERSION: 20.1.8-2
+
 jobs:
   artifacts:
     runs-on: ubuntu-latest
-    outputs:
-      llvm_version: ${{ steps.versions.outputs.llvm_version }}
 
     steps:
-      - uses: dawidd6/action-download-artifact@v11
-        with:
-          workflow: bootstrap_llvm.yml
-          workflow_conclusion: success
-          branch: ${{ github.ref_name }}
-          name: packages
-          path: pkgs
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: dawidd6/action-download-artifact@v11
         with:
           repo: jeremyd2019/cygwin
@@ -31,15 +23,6 @@ jobs:
           path: test-cygwin
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: versions
-        name: versions
-        run: cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: packages
-          path: |
-            pkgs/
       - uses: actions/upload-artifact@v4
         with:
           name: cygwin
@@ -53,10 +36,6 @@ jobs:
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
-        with:
-          name: packages
-          path: pkgs
       - uses: actions/download-artifact@v5
         with:
           name: cygwin
@@ -83,10 +62,6 @@ jobs:
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
-          site: >-
-            http://mirrors.kernel.org/sourceware/cygwin/
-            file://${{ github.workspace }}/pkgs
-          check-sig: false
           packages: |
             cygutils-extra
             cmake
@@ -111,9 +86,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
-            libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
-            llvm=${{needs.artifacts.outputs.llvm_version}}
+            libllvm-devel=${{ env.LLVM_VERSION }}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
@@ -140,8 +113,6 @@ jobs:
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
-          mv "$GITHUB_WORKSPACE/pkgs" .
-          mkdir -p pkgs/x86_64/release
           find "$GITHUB_WORKSPACE/" -maxdepth 1 -type f ! -name .\* -exec cp -t . '{}' +
           mkdir bin
           gcc -o bin/llvm-config.exe llvm-config-wrapper.c
@@ -180,15 +151,11 @@ jobs:
 
   native_rust:
     runs-on: windows-latest
-    needs: [artifacts, cross_rust]
+    needs: cross_rust
 
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
-        with:
-          name: packages
-          path: pkgs
       - uses: actions/download-artifact@v5
         with:
           name: cygwin
@@ -211,10 +178,6 @@ jobs:
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
-          site: >-
-            http://mirrors.kernel.org/sourceware/cygwin/
-            file://${{ github.workspace }}/pkgs
-          check-sig: false
           packages: |
             cygutils-extra
             cmake
@@ -239,9 +202,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
-            libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
-            llvm=${{needs.artifacts.outputs.llvm_version}}
+            libllvm-devel=${{ env.LLVM_VERSION }}
       - name: update cygwin
         env:
           CHERE_INVOKING: 1
@@ -268,8 +229,6 @@ jobs:
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
-          mv "$GITHUB_WORKSPACE/pkgs" .
-          mkdir -p pkgs/x86_64/release
           cp "$GITHUB_WORKSPACE/rust-prefix/rust-url.txt" .
           (cd / && tar -Jxvf "$GITHUB_WORKSPACE/rust-prefix/rust-prefix.tar.xz" | grep -E -- '^usr/bin/[^/]+-[0-9a-f]{16}.dll$' | grep -v rustc_driver | xargs rm)
           rebase -s /usr/bin/rustc_driver*.dll
