@@ -10,6 +10,17 @@ jobs:
     runs-on: windows-latest
     steps:
       - run: git config --global core.autocrlf input
+      - uses: dawidd6/action-download-artifact@v11
+        with:
+          repo: jeremyd2019/cygwin
+          workflow: cygwin.yml
+          workflow_conclusion: success
+          branch: cygwin-3.6.4-posix-spawn
+          event: push
+          name: cygwin-install-x86_64
+          path: test-cygwin
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - id: cache-restore
         uses: actions/cache/restore@v4
         with:
@@ -45,6 +56,12 @@ jobs:
             libssl-devel
             libpolly-devel=${{ env.LLVM_VERSION }}
             clang=${{ env.LLVM_VERSION }}
+      - name: update cygwin
+        env:
+          CHERE_INVOKING: 1
+        shell: c:/msys64/usr/bin/bash.exe -leo pipefail '{0}'
+        run: |
+          cp -f test-cygwin/bin/cygwin1.dll /d/cygwin/bin/cygwin1.dll
 
       - name: prepare cache
         run: |
