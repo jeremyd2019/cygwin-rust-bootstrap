@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 env:
-  LLVM_VERSION: 20.1
+  LLVM_VERSION: 20.1.8-2
 
 jobs:
   lld:
@@ -43,8 +43,8 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libpolly${{ env.LLVM_VERSION }}-devel
-            clang${{ env.LLVM_VERSION }}
+            libpolly-devel=${{ env.LLVM_VERSION }}
+            clang=${{ env.LLVM_VERSION }}
 
       - name: prepare cache
         run: |
