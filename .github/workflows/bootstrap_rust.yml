@@ -91,7 +91,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm21.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
 
@@ -209,7 +209,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm20.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm21.1=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
 

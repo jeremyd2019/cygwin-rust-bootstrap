@@ -2,14 +2,43 @@ name: Build LLD
 on:
   workflow_dispatch:
 
-env:
-  LLVM_VERSION: 20.1.8-2
-
 jobs:
+  artifacts:
+    runs-on: ubuntu-latest
+    outputs:
+      llvm_version: ${{ steps.versions.outputs.llvm_version }}
+      clang_version: ${{ steps.versions.outputs.clang_version }}
+
+    steps:
+      - uses: dawidd6/action-download-artifact@v11
+        with:
+          workflow: bootstrap_llvm.yml
+          workflow_conclusion: success
+          branch: ${{ github.ref_name }}
+          name: packages
+          path: pkgs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: versions
+        name: versions
+        run: cat pkgs/llvm_version.txt >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            pkgs/
+
+
   lld:
     runs-on: windows-latest
+    needs: artifacts
     steps:
       - run: git config --global core.autocrlf input
+      - uses: actions/download-artifact@v5
+        with:
+          name: packages
+          path: pkgs
       - id: cache-restore
         uses: actions/cache/restore@v4
         with:
@@ -22,6 +51,10 @@ jobs:
       - id: cygwin
         uses: cygwin/cygwin-install-action@master
         with:
+          site: >-
+            http://mirrors.kernel.org/sourceware/cygwin/
+            file://${{ github.workspace }}/pkgs
+          check-sig: false
           packages: |
             cygutils-extra
             cmake
@@ -43,8 +76,8 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libpolly-devel=${{ env.LLVM_VERSION }}
-            clang=${{ env.LLVM_VERSION }}
+            libpolly-devel=${{ needs.artifacts.outputs.llvm_version }}
+            clang=${{ needs.artifacts.outputs.clang_version }}
 
       - name: prepare cache
         run: |
