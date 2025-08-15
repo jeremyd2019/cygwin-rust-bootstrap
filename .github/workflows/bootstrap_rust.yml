@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  LLVM_VERSION: 20.1
+  LLVM_VERSION: 20.1.8-2
 
 jobs:
   cross_rust:
@@ -60,7 +60,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm${{ env.LLVM_VERSION }}-devel
+            libllvm-devel=${{ env.LLVM_VERSION }}
 
       - name: prepare cache
         run: |
@@ -166,7 +166,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm${{ env.LLVM_VERSION }}-devel
+            libllvm-devel=${{ env.LLVM_VERSION }}
 
       - name: prepare cache
         run: |
