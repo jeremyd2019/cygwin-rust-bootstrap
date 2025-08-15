@@ -97,8 +97,9 @@ jobs:
       - name: build
         run: |
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          mv "$(cygpath -u '${{github.workspace}}')/pkgs" .
           mkdir -p pkgs/x86_64/release
-          git clone -b playground https://cygwin.com/git/cygwin-packages/lld
+          git clone -b 21.1 https://cygwin.com/git/cygwin-packages/lld
           cd lld
           pip3 install --user myst_parser
           cygport lld.cygport download all-test
