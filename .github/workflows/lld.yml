@@ -81,6 +81,7 @@ jobs:
             libssl-devel
             libllvm${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
+            libpolly-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
             libclang${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.clang_version}}
             clang=${{needs.artifacts.outputs.clang_version}}
