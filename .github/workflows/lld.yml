@@ -79,11 +79,11 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libllvm${{ env.LLVM_SOVERSION }}=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libclang${{ env.LLVM_SOVERSION }}=${{needs.clang_bootstrap.outputs.clang_version}}
-            clang=${{needs.clang_bootstrap.outputs.clang_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.llvm_version}}
+            libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
+            llvm=${{needs.artifacts.outputs.llvm_version}}
+            libclang${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.clang_version}}
+            clang=${{needs.artifacts.outputs.clang_version}}
 
       - name: prepare cache
         run: |
