@@ -88,11 +88,12 @@ jobs:
           for b in g++ ar ranlib x86_64-pc-cygwin-gcc curl-config; do
             ln bin/gcc.exe bin/${b}.exe
           done
-          RUST_URL="$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          #RUST_URL="$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          RUST_URL="https://static.rust-lang.org/dist/rustc-1.89.0-src.tar.xz"
           echo "$RUST_URL" | tee rust-url.txt
           curl -LO "$RUST_URL"
-          tar -Jxf rustc-nightly-src.tar.xz
-          cd rustc-nightly-src
+          tar -Jxf rustc-1.89.0-src.tar.xz
+          cd rustc-1.89.0-src
           MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst < ../bootstrap.toml > bootstrap.toml
           export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
@@ -111,7 +112,7 @@ jobs:
           path: |
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-url.txt
             ${{steps.cygwin.outputs.root}}/home/runneradmin/rust-prefix.tar.xz
-            ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-nightly-src.tar.xz
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-1.89.0-src.tar.xz
 
       - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
         if: always()
@@ -190,8 +191,8 @@ jobs:
           cp "$GITHUB_WORKSPACE/rust-prefix/rust-url.txt" .
           (cd / && tar -Jxvf "$GITHUB_WORKSPACE/rust-prefix/rust-prefix.tar.xz" | grep -E -- '^usr/bin/[^/]+-[0-9a-f]{16}.dll$' | grep -v rustc_driver | xargs rm)
           rebase -s /usr/bin/rustc_driver*.dll
-          tar -Jxf "$GITHUB_WORKSPACE/rust-prefix/rustc-nightly-src.tar.xz"
-          cd rustc-nightly-src
+          tar -Jxf "$GITHUB_WORKSPACE/rust-prefix/rustc-1.89.0-src.tar.xz"
+          cd rustc-1.89.0-src
           cp "$GITHUB_WORKSPACE/bootstrap-native.toml" bootstrap.toml
           LIBGIT2_NO_VENDOR=1 \
           OPENSSL_STATIC=0 \
