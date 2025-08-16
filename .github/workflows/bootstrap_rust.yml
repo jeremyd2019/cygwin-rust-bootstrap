@@ -4,6 +4,9 @@ on:
     - cron: '43 10 * * *'
   workflow_dispatch:
 
+env:
+  LLVM_SOVERSION: 21.1-rc3
+
 jobs:
   artifacts:
     runs-on: ubuntu-latest
@@ -91,7 +94,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm21.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
 
@@ -209,7 +212,7 @@ jobs:
             libssh2-devel
             libssl-devel
             libcurl-devel
-            libllvm21.1=${{needs.artifacts.outputs.llvm_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.artifacts.outputs.llvm_version}}
             libllvm-devel=${{needs.artifacts.outputs.llvm_version}}
             llvm=${{needs.artifacts.outputs.llvm_version}}
 

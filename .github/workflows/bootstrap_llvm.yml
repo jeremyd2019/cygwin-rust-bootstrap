@@ -4,6 +4,9 @@ on:
     - cron: '21 22 * * 0'
   workflow_dispatch:
 
+env:
+  LLVM_SOVERSION: 21.1-rc3
+
 jobs:
 
   llvm_bootstrap:
@@ -139,7 +142,7 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
 
@@ -233,10 +236,10 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
+            libclang${{ env.LLVM_SOVERSION }}=${{needs.clang_bootstrap.outputs.clang_version}}
             clang=${{needs.clang_bootstrap.outputs.clang_version}}
 
       - name: prepare cache
@@ -327,10 +330,10 @@ jobs:
             libpcre2-devel
             libssh2-devel
             libssl-devel
-            libllvm20.1=${{needs.llvm_bootstrap.outputs.llvm_version}}
+            libllvm${{ env.LLVM_SOVERSION }}=${{needs.llvm_bootstrap.outputs.llvm_version}}
             libllvm-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
             llvm=${{needs.llvm_bootstrap.outputs.llvm_version}}
-            libclang20.1=${{needs.clang_bootstrap.outputs.clang_version}}
+            libclang${{ env.LLVM_SOVERSION }}=${{needs.clang_bootstrap.outputs.clang_version}}
             clang=${{needs.clang_bootstrap.outputs.clang_version}}
             libpolly-devel=${{needs.llvm_bootstrap.outputs.llvm_version}}
 
