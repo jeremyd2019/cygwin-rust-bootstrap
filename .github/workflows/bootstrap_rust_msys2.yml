@@ -46,7 +46,7 @@ jobs:
           RUST_URL="$(python -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
           echo "$RUST_URL" | tee rust-url.txt
           curl -LO "$RUST_URL"
-          tar -Jxf rustc-nightly-src.tar.xz
+          MSYS=winsymlinks:sys tar -Jxf rustc-nightly-src.tar.xz
           cd rustc-nightly-src
           MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst < ../bootstrap.toml > bootstrap.toml
           export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
