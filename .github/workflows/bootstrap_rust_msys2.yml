@@ -64,6 +64,24 @@ jobs:
         shell: msys2 '{0}'
       - uses: actions/upload-artifact@v4
         with:
-          name: rust-prefix
+          name: rust-dist
           path: |
             rustc-1.89.0-src/build-Cygwin/dist/*
+
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: cross_rust
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: rust-dist
+          path: rust-dist
+      - name: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh -R '${{ github.repository }}' release create rust-1.89.0-msys2 --title rust-1.89.0-msys2 --notes "" rust-dist/*
+
