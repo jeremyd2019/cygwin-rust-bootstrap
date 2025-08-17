@@ -50,6 +50,7 @@ jobs:
           cd rustc-1.89.0-src
           MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "../bin")" envsubst < ../bootstrap.toml > bootstrap.toml
           export PATH="$(cygpath -ua ../bin):/mingw64/bin:$PATH"
+          unset PKG_CONFIG_PATH
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
           PKG_CONFIG="$(cygpath -w /usr/bin/pkgconf.exe)" \
           LIBGIT2_NO_VENDOR=1 \
