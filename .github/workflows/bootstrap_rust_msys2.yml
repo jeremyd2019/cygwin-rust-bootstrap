@@ -4,9 +4,6 @@ on:
     - cron: '43 10 * * *'
   workflow_dispatch:
 
-env:
-  LLVM_VERSION: 20.1.8-2
-
 jobs:
   cross_rust:
     runs-on: windows-latest
@@ -66,7 +63,7 @@ jobs:
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py dist
           mv build-Cygwin/dist ~/
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: msys2 '{0}'
       - uses: actions/upload-artifact@v4
         with:
           name: rust-prefix
