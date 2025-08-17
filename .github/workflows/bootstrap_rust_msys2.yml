@@ -19,6 +19,7 @@ jobs:
           msystem: MINGW64
           install: >-
             base-devel
+            msys2-runtime-devel
             gcc
             llvm
             python
