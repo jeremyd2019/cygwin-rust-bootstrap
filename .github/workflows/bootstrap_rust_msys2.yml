@@ -73,6 +73,7 @@ jobs:
     permissions:
       contents: write
     needs: cross_rust
+    if: ${{ github.ref != 'refs/heads/main' }}
 
     steps:
       - uses: actions/download-artifact@v5
