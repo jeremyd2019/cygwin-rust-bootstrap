@@ -49,7 +49,7 @@ jobs:
           curl -LO "$RUST_URL"
           MSYS=winsymlinks:sys tar -Jxf rustc-1.89.0-src.tar.xz
           cd rustc-1.89.0-src
-          MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "../bin")" envsubst < ../bootstrap.toml > bootstrap.toml
+          MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "../bin")" envsubst < ../bootstrap.toml | sed -e 's/gz/xz/' > bootstrap.toml
           export PATH="$(cygpath -ua ../bin):/mingw64/bin:$PATH"
           unset PKG_CONFIG_PATH
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
@@ -83,5 +83,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh -R '${{ github.repository }}' release create rust-1.89.0-msys2 --title rust-1.89.0-msys2 --notes "" rust-dist/*
+          gh -R '${{ github.repository }}' release create rust-1.89.0-msys2 --target '${{ github.sha }}' --title rust-1.89.0-msys2 --notes "" rust-dist/*
 
