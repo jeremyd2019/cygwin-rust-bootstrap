@@ -46,7 +46,7 @@ jobs:
           curl -LO "$RUST_URL"
           MSYS=winsymlinks:sys tar -Jxf rustc-nightly-src.tar.xz
           cd rustc-nightly-src
-          MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "../bin")" envsubst < ../bootstrap.toml > bootstrap.toml
+          MSYS2_ROOT="$(cygpath -m /)" WORKSPACE="$(cygpath -ma "../bin")" envsubst < ../bootstrap.toml | sed -e 's/gz/xz/' > bootstrap.toml
           export PATH="$(cygpath -ua ../bin):/mingw64/bin:$PATH"
           unset PKG_CONFIG_PATH
           PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
@@ -65,3 +65,22 @@ jobs:
           path: |
             rust-url.txt
             rustc-nightly-src/build-Cygwin/dist/*
+
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: cross_rust
+    if: ${{ github.ref != 'refs/heads/main' }}
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: rust-dist
+          path: rust-dist
+      - name: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh -R '${{ github.repository }}' release create rust-1.89.0-msys2 --target '${{ github.sha }}' --title rust-1.89.0-msys2 --notes "" rust-dist/*
+
