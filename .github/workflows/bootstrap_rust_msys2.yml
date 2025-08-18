@@ -42,7 +42,7 @@ jobs:
           for b in g++ ar ranlib x86_64-pc-cygwin-gcc curl-config; do
             ln bin/gcc.exe bin/${b}.exe
           done
-          pip install --user tomli
+          pip install --user --break-system-packages tomli
           RUST_URL="$(python -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
           echo "$RUST_URL" | tee rust-url.txt
           curl -LO "$RUST_URL"
