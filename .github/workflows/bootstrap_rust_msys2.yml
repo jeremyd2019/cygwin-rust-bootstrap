@@ -1,7 +1,5 @@
 name: Bootstrap Rust MSYS2
 on:
-  schedule:
-    - cron: '43 10 * * *'
   workflow_dispatch:
 
 jobs:
