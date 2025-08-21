@@ -34,8 +34,9 @@ jobs:
       - run: IF EXIST cygwin-packages move /y cygwin-packages D:\
         shell: cmd
       - id: cygwin
-        uses: cygwin/cygwin-install-action@master
+        uses: jeremyd2019/cygwin-install-action@master
         with:
+          add-to-path: false
           packages: |
             cygutils-extra
             cmake
@@ -80,6 +81,8 @@ jobs:
 
       - name: build
         run: |
+          echo "$PWD"
+          cd ~
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
           cp "$GITHUB_WORKSPACE/"* .
@@ -106,7 +109,7 @@ jobs:
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py install --stage 2
           cd build-Cygwin/dest-rust && tar -Jcf ~/rust-prefix.tar.xz * 
-        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+        shell: cygwin '{0}'
       - uses: actions/upload-artifact@v4
         with:
           name: rust-prefix
