@@ -37,7 +37,6 @@ jobs:
         uses: jeremyd2019/cygwin-install-action@master
         with:
           add-to-path: false
-          login-shell: false
           packages: |
             cygutils-extra
             cmake
