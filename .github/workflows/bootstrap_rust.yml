@@ -37,6 +37,7 @@ jobs:
         uses: jeremyd2019/cygwin-install-action@master
         with:
           add-to-path: false
+          login-shell: false
           packages: |
             cygutils-extra
             cmake
@@ -82,6 +83,7 @@ jobs:
       - name: build
         run: |
           echo "$PWD"
+          echo "$PATH"
           cd ~
           export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
           export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
