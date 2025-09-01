@@ -120,6 +120,133 @@ jobs:
         if: always()
         shell: cmd
 
+  cross_rust_dist:
+    runs-on: windows-latest
+
+    steps:
+      - run: git config --global core.autocrlf input
+      - uses: actions/checkout@v5
+      - id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          release: true
+          update: true
+          msystem: MINGW64
+          install: >-
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-llvm
+            mingw-w64-x86_64-clang
+      - id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          key: cygwin-packages-
+          restore-keys: |
+            cygwin-packages-
+          path: cygwin-packages
+      - run: IF EXIST cygwin-packages move /y cygwin-packages D:\
+        shell: cmd
+      - id: cygwin
+        uses: cygwin/cygwin-install-action@master
+        with:
+          packages: |
+            cygutils-extra
+            cmake
+            calm
+            cygport
+            flexdll
+            gdb
+            git
+            make
+            ninja
+            ocaml
+            python3
+            libxml2-devel
+            zlib-devel
+            libzstd-devel
+            vim
+            python39-sphinx
+            python39-pytz
+            python39-tomli
+            libgit2_1.9
+            libgit2-devel
+            libssh2-devel
+            libssl-devel
+            libcurl-devel
+            libsqlite3-devel
+            libllvm-devel=${{ env.LLVM_VERSION }}
+
+      - name: prepare cache
+        run: |
+          if (Test-Path `${{ steps.cygwin.outputs.package-cache }}\file`* ) {
+            rm -r -fo `${{ steps.cygwin.outputs.package-cache }}\file`*
+          }
+          move "${{ steps.cygwin.outputs.package-cache }}" .
+      - uses: actions/cache/save@v4
+        if: ${{ steps.cache-restore.outputs.cache-matched-key != format('cygwin-packages-{0}', hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini')) }}
+        with:
+          key: cygwin-packages-${{ hashFiles('cygwin-packages/**', '!cygwin-packages/**/setup.ini') }}
+          path: cygwin-packages
+      - name: post cache
+        run: move /Y cygwin-packages "${{ steps.cygwin.outputs.package-cache }}"
+        shell: cmd
+
+      - name: build
+        run: |
+          export PATH=/usr/local/bin:/usr/bin:/bin:$PATH
+          export GITHUB_WORKSPACE="$(cygpath -u '${{github.workspace}}')"
+          cp "$GITHUB_WORKSPACE/"* .
+          mkdir bin
+          gcc -o bin/llvm-config.exe llvm-config-wrapper.c
+          gcc -o bin/gcc.exe wrapper.c
+          for b in g++ ar ranlib x86_64-pc-cygwin-gcc curl-config; do
+            ln bin/gcc.exe bin/${b}.exe
+          done
+          #RUST_URL="$(python3 -c "import tomli; from urllib.request import urlopen; x = tomli.load(urlopen('https://static.rust-lang.org/dist/channel-rust-nightly.toml')); a = [y for y in x['artifacts']['source-code']['target']['*'] if y['url'].endswith('.xz')]; print(a[0]['url'])")"
+          RUST_URL="https://static.rust-lang.org/dist/rustc-1.89.0-src.tar.xz"
+          echo "$RUST_URL" | tee rust-url.txt
+          curl -LO "$RUST_URL"
+          tar -Jxf rustc-1.89.0-src.tar.xz
+          cd rustc-1.89.0-src
+          MSYS2_ROOT="$(cygpath -m '${{ steps.msys2.outputs.msys2-location }}')" WORKSPACE="$(cygpath -ma "$HOME/bin")" envsubst | sed -e 's/gz/xz/' < ../bootstrap.toml > bootstrap.toml
+          export PATH="$HOME/bin:$(cygpath -u '${{ steps.msys2.outputs.msys2-location }}')/mingw64/bin:$PATH"
+          PKG_CONFIG_SYSROOT_DIR="$(cygpath -w /)" \
+          PKG_CONFIG="$(cygpath -w /usr/bin/pkgconf.exe)" \
+          LIBGIT2_NO_VENDOR=1 \
+          OPENSSL_DIR="$(cygpath -w /usr)" \
+          OPENSSL_LIB_DIR="$(cygpath -w /usr/lib)" \
+          OPENSSL_STATIC=0 \
+          LIBSQLITE3_SYS_USE_PKG_CONFIG=1 \
+          DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
+          python x.py dist
+        shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-dist
+          path: |
+            ${{steps.cygwin.outputs.root}}/home/runneradmin/rustc-1.89.0-src/build-Cygwin/dist/*
+
+      - run: DEL /F ${{ steps.cygwin.outputs.root }}\bin\git.exe
+        if: always()
+        shell: cmd
+
+  upload_dist:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: cross_rust_dist
+    if: ${{ github.ref != 'refs/heads/main' }}
+
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: rust-dist
+          path: rust-dist
+      - name: release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh -R '${{ github.repository }}' release create rust-1.89.0-cygwin --target '${{ github.sha }}' --title rust-1.89.0-cygwin --notes "" rust-dist/*
+
   native_rust:
     runs-on: windows-latest
     needs: cross_rust
