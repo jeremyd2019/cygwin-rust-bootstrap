@@ -122,6 +122,8 @@ jobs:
 
   cross_rust_dist:
     runs-on: windows-latest
+    env:
+      CYGWIN: winsymlinks:nativestrict
 
     steps:
       - run: git config --global core.autocrlf input
