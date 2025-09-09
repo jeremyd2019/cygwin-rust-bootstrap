@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  LLVM_SOVERSION: 21.1-rc3
+  LLVM_SOVERSION: 21.1
 
 jobs:
   artifacts:
