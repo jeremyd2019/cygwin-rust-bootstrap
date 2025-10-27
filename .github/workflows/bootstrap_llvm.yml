@@ -80,7 +80,7 @@ jobs:
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: packages
           overwrite: true
@@ -176,7 +176,7 @@ jobs:
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: packages
           overwrite: true
@@ -270,7 +270,7 @@ jobs:
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: packages
           overwrite: true
@@ -365,7 +365,7 @@ jobs:
           xz -6e <x86_64/setup.ini >x86_64/setup.xz
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: packages
           overwrite: true
