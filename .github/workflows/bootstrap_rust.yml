@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
 
 env:
-  LLVM_VERSION: 21.1.2-1
-  RUST_VERSION: 1.90.0
+  LLVM_VERSION: 21.1.4-1
+  RUST_VERSION: 1.91.0
 
 jobs:
   cross_rust:
@@ -112,7 +112,7 @@ jobs:
           python x.py install --stage 2
           cd build-Cygwin/dest-rust && tar -Jcf ~/rust-prefix.tar.xz * 
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: rust-prefix
           path: |
@@ -228,7 +228,7 @@ jobs:
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py dist
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: rust-dist
           path: |
@@ -246,7 +246,7 @@ jobs:
     if: ${{ github.ref != 'refs/heads/main' }}
 
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: rust-dist
           path: rust-dist
@@ -263,7 +263,7 @@ jobs:
     steps:
       - run: git config --global core.autocrlf input
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: rust-prefix
           path: rust-prefix
@@ -343,7 +343,7 @@ jobs:
           python3 x.py install --stage 2
           cd build-Cygwin/dest-rust && tar -Jcf ~/rust-prefix.tar.xz * 
         shell: d:\cygwin\bin\bash.exe -leo pipefail -o igncr '{0}'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: rust-prefix
           overwrite: true
