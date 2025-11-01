@@ -61,7 +61,7 @@ jobs:
           DESTDIR="$(cygpath -w "$PWD/build-Cygwin/dest-rust")" \
           python x.py dist
         shell: msys2 '{0}'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: rust-prefix
           path: |
