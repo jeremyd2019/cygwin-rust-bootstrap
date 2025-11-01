@@ -98,7 +98,7 @@ jobs:
       clang_version: ${{ steps.build.outputs.clang_version }}
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: packages
           path: pkgs
@@ -192,7 +192,7 @@ jobs:
     needs: [llvm_bootstrap, clang_bootstrap]
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: packages
           path: pkgs
@@ -286,7 +286,7 @@ jobs:
     needs: [llvm_bootstrap, clang_bootstrap, llvm]
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: packages
           path: pkgs
