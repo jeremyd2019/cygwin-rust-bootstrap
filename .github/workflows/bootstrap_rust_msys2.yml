@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - run: git config --global core.autocrlf input
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - id: msys2
         uses: msys2/setup-msys2@v2
         with:
