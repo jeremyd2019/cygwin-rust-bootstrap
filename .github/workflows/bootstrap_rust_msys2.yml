@@ -76,7 +76,7 @@ jobs:
     if: ${{ github.ref != 'refs/heads/main' }}
 
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: rust-dist
           path: rust-dist
